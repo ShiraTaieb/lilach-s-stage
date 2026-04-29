@@ -13,7 +13,9 @@ import { Route as StudioRouteImport } from './routes/studio'
 import { Route as SoundRouteImport } from './routes/sound'
 import { Route as ShowsRouteImport } from './routes/shows'
 import { Route as PlaybacksRouteImport } from './routes/playbacks'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
 const StudioRoute = StudioRouteImport.update({
@@ -36,9 +38,19 @@ const PlaybacksRoute = PlaybacksRouteImport.update({
   path: '/playbacks',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsRoute = EventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -49,7 +61,9 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/events': typeof EventsRoute
+  '/login': typeof LoginRoute
   '/playbacks': typeof PlaybacksRoute
   '/shows': typeof ShowsRoute
   '/sound': typeof SoundRoute
@@ -57,7 +71,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/events': typeof EventsRoute
+  '/login': typeof LoginRoute
   '/playbacks': typeof PlaybacksRoute
   '/shows': typeof ShowsRoute
   '/sound': typeof SoundRoute
@@ -66,7 +82,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/events': typeof EventsRoute
+  '/login': typeof LoginRoute
   '/playbacks': typeof PlaybacksRoute
   '/shows': typeof ShowsRoute
   '/sound': typeof SoundRoute
@@ -74,13 +92,31 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/events' | '/playbacks' | '/shows' | '/sound' | '/studio'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/events'
+    | '/login'
+    | '/playbacks'
+    | '/shows'
+    | '/sound'
+    | '/studio'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/events' | '/playbacks' | '/shows' | '/sound' | '/studio'
+  to:
+    | '/'
+    | '/admin'
+    | '/events'
+    | '/login'
+    | '/playbacks'
+    | '/shows'
+    | '/sound'
+    | '/studio'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/events'
+    | '/login'
     | '/playbacks'
     | '/shows'
     | '/sound'
@@ -89,7 +125,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   EventsRoute: typeof EventsRoute
+  LoginRoute: typeof LoginRoute
   PlaybacksRoute: typeof PlaybacksRoute
   ShowsRoute: typeof ShowsRoute
   SoundRoute: typeof SoundRoute
@@ -126,11 +164,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlaybacksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/events': {
       id: '/events'
       path: '/events'
       fullPath: '/events'
       preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -145,7 +197,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   EventsRoute: EventsRoute,
+  LoginRoute: LoginRoute,
   PlaybacksRoute: PlaybacksRoute,
   ShowsRoute: ShowsRoute,
   SoundRoute: SoundRoute,
