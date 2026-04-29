@@ -13,7 +13,7 @@ const FALLBACK_IMG: Record<string, string> = {
   "brides-evening": brideImg,
 };
 
-export const Route = createFileRoute("/events/$slug")({
+export const Route = createFileRoute("/events/$slug" as any)({
   head: ({ params }) => ({
     meta: [
       { title: `${params.slug} - לילך טייב` },

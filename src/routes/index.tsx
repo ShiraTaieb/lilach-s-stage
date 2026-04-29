@@ -22,9 +22,9 @@ const GALLERY = [g1, g2, g3, heroImg, g1, g2];
 
 const HIGHLIGHTS = [
   { icon: Heart, title: "אירועים פרטיים", to: "/events", desc: "בת מצווה, הפרשת חלה וערב כלה" },
-  { icon: Calendar, title: "מופעי נשים", to: "/shows", desc: "מופעים קרובים והזמנות" },
-  { icon: Mic2, title: "אולפן הקלטות", to: "/studio", desc: "הפקה מקצועית בסטודיו" },
-  { icon: Speaker, title: "השכרת הגברה", to: "/sound", desc: "ציוד מקצועי לכל אירוע" },
+  { icon: Calendar, title: "מופעי נשים", to: "/shows", desc: "מופעים קרובים והזמנת מופעים" },
+  { icon: Mic2, title: "אולפן הקלטות", to: "/studio", desc: "הפקה מקצועית בסטודיו אולפני \"קולות\"" },
+  { icon: Speaker, title: "השכרת הגברה", to: "/sound", desc: "שירותי ציוד מקצועי" },
   { icon: Music, title: "פלייבקים", to: "/playbacks", desc: "חנות שירים ופלייבקים" },
 ];
 
