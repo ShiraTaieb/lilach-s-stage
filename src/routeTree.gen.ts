@@ -9,9 +9,33 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StudioRouteImport } from './routes/studio'
+import { Route as SoundRouteImport } from './routes/sound'
+import { Route as ShowsRouteImport } from './routes/shows'
+import { Route as PlaybacksRouteImport } from './routes/playbacks'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as IndexRouteImport } from './routes/index'
 
+const StudioRoute = StudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SoundRoute = SoundRouteImport.update({
+  id: '/sound',
+  path: '/sound',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShowsRoute = ShowsRouteImport.update({
+  id: '/shows',
+  path: '/shows',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlaybacksRoute = PlaybacksRouteImport.update({
+  id: '/playbacks',
+  path: '/playbacks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsRoute = EventsRouteImport.update({
   id: '/events',
   path: '/events',
@@ -26,31 +50,82 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/events': typeof EventsRoute
+  '/playbacks': typeof PlaybacksRoute
+  '/shows': typeof ShowsRoute
+  '/sound': typeof SoundRoute
+  '/studio': typeof StudioRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/events': typeof EventsRoute
+  '/playbacks': typeof PlaybacksRoute
+  '/shows': typeof ShowsRoute
+  '/sound': typeof SoundRoute
+  '/studio': typeof StudioRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/events': typeof EventsRoute
+  '/playbacks': typeof PlaybacksRoute
+  '/shows': typeof ShowsRoute
+  '/sound': typeof SoundRoute
+  '/studio': typeof StudioRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/events'
+  fullPaths: '/' | '/events' | '/playbacks' | '/shows' | '/sound' | '/studio'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/events'
-  id: '__root__' | '/' | '/events'
+  to: '/' | '/events' | '/playbacks' | '/shows' | '/sound' | '/studio'
+  id:
+    | '__root__'
+    | '/'
+    | '/events'
+    | '/playbacks'
+    | '/shows'
+    | '/sound'
+    | '/studio'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EventsRoute: typeof EventsRoute
+  PlaybacksRoute: typeof PlaybacksRoute
+  ShowsRoute: typeof ShowsRoute
+  SoundRoute: typeof SoundRoute
+  StudioRoute: typeof StudioRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/studio': {
+      id: '/studio'
+      path: '/studio'
+      fullPath: '/studio'
+      preLoaderRoute: typeof StudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sound': {
+      id: '/sound'
+      path: '/sound'
+      fullPath: '/sound'
+      preLoaderRoute: typeof SoundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shows': {
+      id: '/shows'
+      path: '/shows'
+      fullPath: '/shows'
+      preLoaderRoute: typeof ShowsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/playbacks': {
+      id: '/playbacks'
+      path: '/playbacks'
+      fullPath: '/playbacks'
+      preLoaderRoute: typeof PlaybacksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/events': {
       id: '/events'
       path: '/events'
@@ -71,6 +146,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EventsRoute: EventsRoute,
+  PlaybacksRoute: PlaybacksRoute,
+  ShowsRoute: ShowsRoute,
+  SoundRoute: SoundRoute,
+  StudioRoute: StudioRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
