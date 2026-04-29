@@ -1,10 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Sparkles, Music, Mic2, Speaker, Calendar, Heart, ChevronLeft } from "lucide-react";
-import heroImg from "@/assets/hero-singer.jpg";
-import g1 from "@/assets/gallery-1.jpg";
-import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
+import { useEffect, useRef, useState } from "react";
+import { Music, Mic2, Speaker, Calendar, Heart, ChevronLeft } from "lucide-react";
+import hero1 from "@/assets/hero-1.jpeg";
+import hero2 from "@/assets/hero-2.jpeg";
+import hero3 from "@/assets/hero-3.webp";
+import g01 from "@/assets/gallery-01.jpeg";
+import g02 from "@/assets/gallery-02.jpeg";
+import g03 from "@/assets/gallery-03.jpeg";
+import g04 from "@/assets/gallery-04.jpeg";
+import g05 from "@/assets/gallery-05.jpeg";
+import g06 from "@/assets/gallery-06.jpeg";
+import g07 from "@/assets/gallery-07.jpeg";
 import { ContactButtons } from "@/components/contact-buttons";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -18,7 +24,8 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const GALLERY = [g1, g2, g3, heroImg, g1, g2];
+const HERO_SLIDES = [hero1, hero2, hero3];
+const GALLERY = [g01, g02, g03, g04, g05, g06, g07];
 
 const HIGHLIGHTS = [
   { icon: Heart, title: "אירועים פרטיים", to: "/events", desc: "בת מצווה, הפרשת חלה וערב כלה" },
@@ -30,6 +37,8 @@ const HIGHLIGHTS = [
 
 function Home() {
   const [upcoming, setUpcoming] = useState<{ id: string; title: string; event_date: string }[]>([]);
+  const [slide, setSlide] = useState(0);
+  const slideTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     supabase
@@ -41,23 +50,29 @@ function Home() {
       .then(({ data }) => setUpcoming(data ?? []));
   }, []);
 
+  useEffect(() => {
+    slideTimer.current = setInterval(() => {
+      setSlide((s) => (s + 1) % HERO_SLIDES.length);
+    }, 5000);
+    return () => {
+      if (slideTimer.current) clearInterval(slideTimer.current);
+    };
+  }, []);
+
   return (
     <>
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="container mx-auto grid gap-12 px-4 py-12 md:py-20 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-24">
           <div className="order-2 lg:order-1">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-1.5 text-xs tracking-display text-primary">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>ZONE FOR WOMEN ONLY</span>
-            </div>
             <h1 className="font-display text-5xl leading-[1.05] md:text-6xl lg:text-7xl">
               <span className="block italic text-foreground/90">לילך טייב</span>
               <span className="block text-gradient-gold">זמרת לנשים</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              קול מרגש, נשמה אמיתית והופעה בלתי נשכחת. מתמחה באירועי נשים, ערבי כלות,
-              הפרשות חלה ובת מצווה - כדי שהאירוע שלך יהיה מיוחד באמת.
+              קול מרגש, נשמה אמיתית והופעה בלתי נשכחת.
+              <br />
+              אירועי נשים, ערבי כלות, הפרשות חלה ובת מצווה - כדי שהאירוע שלך יהיה מיוחד באמת.
             </p>
             <div className="mt-8">
               <ContactButtons message="שלום לילך, אשמח לקבל פרטים והצעת מחיר" />
@@ -79,16 +94,26 @@ function Home() {
             <div className="relative mx-auto max-w-md">
               <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-primary/30 via-rose-400/20 to-burgundy/30 blur-3xl" />
               <div className="relative overflow-hidden rounded-[2rem] border border-primary/30 shadow-elegant">
-                <img
-                  src={heroImg}
-                  alt="לילך טייב - זמרת לנשים"
-                  width={1080}
-                  height={1620}
-                  className="h-[520px] w-full object-cover md:h-[640px]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-                <div className="absolute bottom-0 right-0 p-6">
-                  <p className="font-display text-2xl italic text-cream">"שירה היא שפת הנשמה"</p>
+                <div className="relative h-[520px] w-full md:h-[640px]">
+                  {HERO_SLIDES.map((src, i) => (
+                    <img
+                      key={i}
+                      src={src}
+                      alt={`לילך טייב - הופעה ${i + 1}`}
+                      className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-in-out ${i === slide ? "opacity-100" : "opacity-0"}`}
+                    />
+                  ))}
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+                    {HERO_SLIDES.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setSlide(i)}
+                        aria-label={`שקופית ${i + 1}`}
+                        className={`h-1.5 rounded-full transition-all ${i === slide ? "w-8 bg-primary" : "w-3 bg-cream/50"}`}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -126,21 +151,19 @@ function Home() {
             רגעים מהבמה, מהאירועים ומהמופעים החיים
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
+        <div className="columns-2 gap-4 md:columns-3 lg:columns-4 [column-fill:_balance]">
           {GALLERY.map((src, i) => (
             <div
               key={i}
-              className={`group relative overflow-hidden rounded-2xl border border-border/40 ${
-                i === 0 ? "row-span-2 md:col-span-2" : ""
-              }`}
+              className="group relative mb-4 break-inside-avoid overflow-hidden rounded-2xl border border-border/40"
             >
               <img
                 src={src}
                 alt={`הופעה ${i + 1}`}
                 loading="lazy"
-                className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+                className="w-full object-cover transition duration-700 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-60 transition group-hover:opacity-30" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-50 transition group-hover:opacity-20" />
             </div>
           ))}
         </div>
