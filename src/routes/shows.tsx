@@ -42,7 +42,7 @@ function ShowsPage() {
       <section className="mb-20">
         <div className="mb-8 flex items-center gap-3">
           <Calendar className="h-6 w-6 text-primary" />
-          <h2 className="font-display text-3xl italic">מופעים קרובים</h2>
+          <h2 className="font-display text-3xl italic">מופעים קרובים והזמנת מופעים</h2>
         </div>
         {upcoming.length === 0 ? (
           <p className="text-muted-foreground">אין מופעים קרובים כרגע. עקבי אחרי ההודעות לעדכונים!</p>

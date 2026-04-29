@@ -30,7 +30,7 @@ function SoundPage() {
         <div>
           <p className="mb-3 text-xs tracking-display text-primary">SOUND & PA</p>
           <h1 className="font-display text-5xl italic leading-tight md:text-6xl">
-            <span className="text-gradient-gold">השכרת ציוד הגברה מקצועי</span>
+            <span className="text-gradient-gold">שירותי ציוד מקצועי</span>
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-foreground/90">
             ציוד הגברה איכותי ומקצועי לכל אירוע - מאירוע אינטימי ועד מופע גדול.
