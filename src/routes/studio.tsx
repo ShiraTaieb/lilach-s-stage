@@ -28,8 +28,8 @@ function StudioPage() {
         </div>
         <div>
           <p className="mb-3 text-xs tracking-display text-primary">RECORDING STUDIO</p>
-          <h1 className="font-display text-5xl italic md:text-6xl">
-            <span className="text-gradient-gold">אולפן הקלטות</span>
+          <h1 className="font-display text-5xl italic leading-tight md:text-6xl">
+            <span className="text-gradient-gold">אולפן הקלטות אולפני "קולות"</span>
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-foreground/90">
             אולפן הקלטות ביתי, מקצועי וחם - מקום שבו קמים שירים. אני מקליטה ומפיקה שירים, פלייבקים,
