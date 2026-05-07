@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Music, Mic2, Speaker, Calendar, Heart, ChevronLeft } from "lucide-react";
 import hero1 from "@/assets/hero-1.jpeg";
 import hero2 from "@/assets/hero-2.jpeg";
-import hero3 from "@/assets/hero-3.webp";
+import hero3 from "@/assets/hero-3.jpeg";
 import g01 from "@/assets/gallery-01.jpeg";
 import g02 from "@/assets/gallery-02.jpeg";
 import g03 from "@/assets/gallery-03.jpeg";
@@ -25,7 +25,16 @@ export const Route = createFileRoute("/")({
 });
 
 const HERO_SLIDES = [hero1, hero2, hero3];
-const GALLERY = [g01, g02, g03, g04, g05, g06, g07];
+// Bento layout: 4 cols × 3 rows = 12 cells, 7 images, zero gaps
+const GALLERY: { src: string; className: string }[] = [
+  { src: g01, className: "col-span-2 row-span-2" },
+  { src: g02, className: "col-span-2 row-span-1" },
+  { src: g03, className: "col-span-1 row-span-1" },
+  { src: g04, className: "col-span-1 row-span-1" },
+  { src: g05, className: "col-span-2 row-span-1" },
+  { src: g06, className: "col-span-1 row-span-1" },
+  { src: g07, className: "col-span-1 row-span-1" },
+];
 
 const HIGHLIGHTS = [
   { icon: Heart, title: "אירועים פרטיים", to: "/events", desc: "בת מצווה, הפרשת חלה וערב כלה" },
@@ -151,17 +160,17 @@ function Home() {
             רגעים מהבמה, מהאירועים ומהמופעים החיים
           </p>
         </div>
-        <div className="columns-2 gap-4 md:columns-3 lg:columns-4 [column-fill:_balance]">
-          {GALLERY.map((src, i) => (
+        <div className="grid auto-rows-[180px] grid-cols-4 gap-4 md:auto-rows-[220px] lg:auto-rows-[260px]">
+          {GALLERY.map((item, i) => (
             <div
               key={i}
-              className="group relative mb-4 break-inside-avoid overflow-hidden rounded-2xl border border-border/40"
+              className={`group relative overflow-hidden rounded-2xl border border-border/40 ${item.className}`}
             >
               <img
-                src={src}
+                src={item.src}
                 alt={`הופעה ${i + 1}`}
                 loading="lazy"
-                className="w-full object-cover transition duration-700 group-hover:scale-110"
+                className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-50 transition group-hover:opacity-20" />
             </div>
