@@ -60,56 +60,81 @@ function AdminPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <AdminSection
-          table="private_events"
+          table="events"
           title="אירועים פרטיים"
           orderBy="sort_order"
+          filter={{ column: "kind", value: "private" }}
+          defaults={{ kind: "private" }}
           fields={[
             { name: "title", label: "כותרת", required: true },
             { name: "slug", label: "מזהה (slug באנגלית)", required: true },
             { name: "description", label: "תיאור", type: "textarea", required: true },
-            { name: "image_url", label: "תמונה (URL)", type: "url" },
+            { name: "image_url", label: "תמונה", type: "image" },
             { name: "sort_order", label: "סדר", type: "number" },
           ]}
           display={(r) => <span><b>{String(r.title)}</b> · {String(r.slug)}</span>}
         />
 
         <AdminSection
-          table="upcoming_shows"
+          table="events"
           title="מופעים קרובים"
           orderBy="event_date"
+          filter={{ column: "kind", value: "upcoming" }}
+          defaults={{ kind: "upcoming" }}
           fields={[
             { name: "title", label: "כותרת", required: true },
             { name: "event_date", label: "תאריך", type: "datetime-local", required: true },
             { name: "venue", label: "מקום" },
             { name: "description", label: "תיאור", type: "textarea" },
-            { name: "image_url", label: "תמונה (URL)", type: "url" },
+            { name: "image_url", label: "תמונה", type: "image" },
           ]}
-          display={(r) => <span><b>{String(r.title)}</b> · {new Date(String(r.event_date)).toLocaleDateString("he-IL")}</span>}
+          display={(r) => <span><b>{String(r.title)}</b> · {r.event_date ? new Date(String(r.event_date)).toLocaleDateString("he-IL") : ""}</span>}
         />
 
         <AdminSection
-          table="booking_shows"
+          table="events"
           title="מופעים להזמנה"
           orderBy="sort_order"
+          filter={{ column: "kind", value: "booking" }}
+          defaults={{ kind: "booking" }}
           fields={[
             { name: "title", label: "כותרת", required: true },
             { name: "description", label: "תיאור", type: "textarea", required: true },
-            { name: "image_url", label: "תמונה (URL)", type: "url" },
+            { name: "image_url", label: "תמונה", type: "image" },
             { name: "sort_order", label: "סדר", type: "number" },
           ]}
           display={(r) => <b>{String(r.title)}</b>}
         />
 
         <AdminSection
-          table="equipment"
-          title="ציוד הגברה"
+          table="services"
+          title="שירותים / ציוד"
           orderBy="sort_order"
           fields={[
-            { name: "name", label: "שם", required: true },
+            { name: "title", label: "כותרת", required: true },
             { name: "description", label: "תיאור", type: "textarea" },
+            { name: "image_url", label: "תמונה", type: "image" },
             { name: "sort_order", label: "סדר", type: "number" },
           ]}
-          display={(r) => <b>{String(r.name)}</b>}
+          display={(r) => <b>{String(r.title)}</b>}
+        />
+
+        <AdminSection
+          table="gallery"
+          title="גלריית תמונות"
+          orderBy="sort_order"
+          fields={[
+            { name: "image_url", label: "תמונה", type: "image", required: true },
+            { name: "alt", label: "תיאור (alt)" },
+            { name: "span_class", label: "גודל בגריד", type: "select", options: [
+              { value: "col-span-1 row-span-1", label: "רגיל (1×1)" },
+              { value: "col-span-2 row-span-1", label: "רחב (2×1)" },
+              { value: "col-span-1 row-span-2", label: "גבוה (1×2)" },
+              { value: "col-span-2 row-span-2", label: "גדול (2×2)" },
+            ]},
+            { name: "sort_order", label: "סדר", type: "number" },
+          ]}
+          display={(r) => <span className="flex items-center gap-2">{r.image_url ? <img src={String(r.image_url)} className="h-8 w-8 rounded object-cover" alt="" /> : null}<span className="truncate">{String(r.alt || r.image_url)}</span></span>}
         />
 
         <AdminSection
@@ -120,7 +145,7 @@ function AdminPage() {
             { name: "song_name", label: "שם השיר", required: true },
             { name: "artist_name", label: "שם האמן", required: true },
             { name: "price", label: "מחיר (₪)", type: "number", required: true },
-            { name: "image_url", label: "תמונה (URL)", type: "url" },
+            { name: "image_url", label: "תמונה", type: "image" },
           ]}
           display={(r) => <span><b>{String(r.song_name)}</b> · {String(r.artist_name)} · ₪{String(r.price)}</span>}
         />
