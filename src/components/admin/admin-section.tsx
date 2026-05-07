@@ -1,40 +1,50 @@
 import { useEffect, useState } from "react";
-import { Pencil, Plus, Trash2, X, Save } from "lucide-react";
+import { Pencil, Plus, Trash2, X, Save, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 export type Field = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "datetime-local" | "url";
+  type?: "text" | "textarea" | "number" | "datetime-local" | "url" | "image" | "select";
   required?: boolean;
+  options?: { value: string; label: string }[];
 };
 
+export type AdminTable = "events" | "services" | "gallery" | "playbacks";
+
 interface Props {
-  table: "private_events" | "upcoming_shows" | "booking_shows" | "equipment" | "playbacks";
+  table: AdminTable;
   title: string;
   fields: Field[];
   orderBy: string;
   ascending?: boolean;
+  filter?: { column: string; value: string };
+  defaults?: Record<string, unknown>;
   display: (row: Record<string, unknown>) => React.ReactNode;
 }
 
-export function AdminSection({ table, title, fields, orderBy, ascending = true, display }: Props) {
+export function AdminSection({ table, title, fields, orderBy, ascending = true, filter, defaults, display }: Props) {
   const [rows, setRows] = useState<Record<string, unknown>[]>([]);
   const [editing, setEditing] = useState<Record<string, unknown> | null>(null);
   const [open, setOpen] = useState(false);
+  const [uploading, setUploading] = useState<string | null>(null);
 
   const load = async () => {
-    const { data, error } = await supabase.from(table).select("*").order(orderBy, { ascending });
+    let q = supabase.from(table).select("*").order(orderBy, { ascending });
+    if (filter) q = q.eq(filter.column, filter.value);
+    const { data, error } = await q;
     if (error) toast.error(error.message);
-    setRows(data ?? []);
+    setRows((data ?? []) as Record<string, unknown>[]);
   };
 
   useEffect(() => { load(); }, []);
 
   const startNew = () => {
-    const empty: Record<string, unknown> = {};
-    fields.forEach((f) => (empty[f.name] = f.type === "number" ? 0 : ""));
+    const empty: Record<string, unknown> = { ...(defaults ?? {}) };
+    fields.forEach((f) => {
+      if (!(f.name in empty)) empty[f.name] = f.type === "number" ? 0 : "";
+    });
     setEditing(empty);
     setOpen(true);
   };
@@ -50,10 +60,27 @@ export function AdminSection({ table, title, fields, orderBy, ascending = true, 
     setOpen(true);
   };
 
+  const handleFile = async (fieldName: string, file: File) => {
+    setUploading(fieldName);
+    try {
+      const ext = file.name.split(".").pop() ?? "bin";
+      const path = `${table}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error } = await supabase.storage.from("site-media").upload(path, file, { upsert: false });
+      if (error) throw error;
+      const { data } = supabase.storage.from("site-media").getPublicUrl(path);
+      setEditing((prev) => prev ? { ...prev, [fieldName]: data.publicUrl } : prev);
+      toast.success("הקובץ הועלה");
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "שגיאה בהעלאה");
+    } finally {
+      setUploading(null);
+    }
+  };
+
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editing) return;
-    const payload: Record<string, unknown> = {};
+    const payload: Record<string, unknown> = { ...(defaults ?? {}) };
     fields.forEach((f) => {
       let v = editing[f.name];
       if (f.type === "number") v = Number(v);
@@ -61,11 +88,11 @@ export function AdminSection({ table, title, fields, orderBy, ascending = true, 
       payload[f.name] = v;
     });
     if (editing.id) {
-      const { error } = await supabase.from(table).update(payload as any).eq("id", editing.id as string);
+      const { error } = await supabase.from(table).update(payload).eq("id", editing.id as string);
       if (error) return toast.error(error.message);
       toast.success("נשמר");
     } else {
-      const { error } = await supabase.from(table).insert(payload as any);
+      const { error } = await supabase.from(table).insert(payload);
       if (error) return toast.error(error.message);
       toast.success("נוסף");
     }
@@ -116,6 +143,23 @@ export function AdminSection({ table, title, fields, orderBy, ascending = true, 
                   <span className="mb-1 block text-sm text-muted-foreground">{f.label}</span>
                   {f.type === "textarea" ? (
                     <textarea required={f.required} rows={4} value={String(editing[f.name] ?? "")} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })} className="w-full rounded-xl border border-input bg-background/60 px-3 py-2 outline-none focus:border-primary" />
+                  ) : f.type === "select" ? (
+                    <select required={f.required} value={String(editing[f.name] ?? "")} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })} className="w-full rounded-xl border border-input bg-background/60 px-3 py-2 outline-none focus:border-primary">
+                      <option value="">בחרי...</option>
+                      {f.options?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                    </select>
+                  ) : f.type === "image" ? (
+                    <div className="space-y-2">
+                      {editing[f.name] && <img src={String(editing[f.name])} alt="" className="h-24 w-full rounded-lg object-cover" />}
+                      <div className="flex items-center gap-2">
+                        <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-input bg-background/60 px-3 py-2 text-sm hover:border-primary">
+                          <Upload className="h-4 w-4" />
+                          {uploading === f.name ? "מעלה..." : "העלאת תמונה"}
+                          <input type="file" accept="image/*,audio/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFile(f.name, e.target.files[0])} />
+                        </label>
+                        <input type="url" placeholder="או הדביקי URL" value={String(editing[f.name] ?? "")} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })} className="flex-1 rounded-lg border border-input bg-background/60 px-3 py-2 text-xs outline-none focus:border-primary" />
+                      </div>
+                    </div>
                   ) : (
                     <input type={f.type ?? "text"} required={f.required} value={String(editing[f.name] ?? "")} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })} className="w-full rounded-xl border border-input bg-background/60 px-3 py-2 outline-none focus:border-primary" />
                   )}
