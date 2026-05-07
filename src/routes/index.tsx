@@ -4,13 +4,6 @@ import { Music, Mic2, Speaker, Calendar, Heart, ChevronLeft } from "lucide-react
 import hero1 from "@/assets/hero-1.jpeg";
 import hero2 from "@/assets/hero-2.jpeg";
 import hero3 from "@/assets/hero-3.jpeg";
-import g01 from "@/assets/gallery-01.jpeg";
-import g02 from "@/assets/gallery-02.jpeg";
-import g03 from "@/assets/gallery-03.jpeg";
-import g04 from "@/assets/gallery-04.jpeg";
-import g05 from "@/assets/gallery-05.jpeg";
-import g06 from "@/assets/gallery-06.jpeg";
-import g07 from "@/assets/gallery-07.jpeg";
 import { ContactButtons } from "@/components/contact-buttons";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -25,16 +18,6 @@ export const Route = createFileRoute("/")({
 });
 
 const HERO_SLIDES = [hero1, hero2, hero3];
-// Bento layout: 4 cols × 3 rows = 12 cells, 7 images, zero gaps
-const GALLERY: { src: string; className: string }[] = [
-  { src: g01, className: "col-span-2 row-span-2" },
-  { src: g02, className: "col-span-2 row-span-1" },
-  { src: g03, className: "col-span-1 row-span-1" },
-  { src: g04, className: "col-span-1 row-span-1" },
-  { src: g05, className: "col-span-2 row-span-1" },
-  { src: g06, className: "col-span-1 row-span-1" },
-  { src: g07, className: "col-span-1 row-span-1" },
-];
 
 const HIGHLIGHTS = [
   { icon: Heart, title: "אירועים פרטיים", to: "/events", desc: "בת מצווה, הפרשת חלה וערב כלה" },
@@ -44,33 +27,29 @@ const HIGHLIGHTS = [
   { icon: Music, title: "פלייבקים", to: "/playbacks", desc: "חנות שירים ופלייבקים" },
 ];
 
+interface GalleryItem { id: string; image_url: string; alt: string | null; span_class: string | null }
+
 function Home() {
   const [upcoming, setUpcoming] = useState<{ id: string; title: string; event_date: string }[]>([]);
+  const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [slide, setSlide] = useState(0);
   const slideTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    supabase
-      .from("upcoming_shows")
-      .select("id,title,event_date")
-      .gte("event_date", new Date().toISOString())
-      .order("event_date")
-      .limit(1)
-      .then(({ data }) => setUpcoming(data ?? []));
+    supabase.from("events").select("id,title,event_date").eq("kind", "upcoming")
+      .gte("event_date", new Date().toISOString()).order("event_date").limit(1)
+      .then(({ data }) => setUpcoming((data ?? []).filter((d) => d.event_date) as { id: string; title: string; event_date: string }[]));
+    supabase.from("gallery").select("id,image_url,alt,span_class").order("sort_order")
+      .then(({ data }) => setGallery((data ?? []) as GalleryItem[]));
   }, []);
 
   useEffect(() => {
-    slideTimer.current = setInterval(() => {
-      setSlide((s) => (s + 1) % HERO_SLIDES.length);
-    }, 5000);
-    return () => {
-      if (slideTimer.current) clearInterval(slideTimer.current);
-    };
+    slideTimer.current = setInterval(() => setSlide((s) => (s + 1) % HERO_SLIDES.length), 5000);
+    return () => { if (slideTimer.current) clearInterval(slideTimer.current); };
   }, []);
 
   return (
     <>
-      {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="container mx-auto grid gap-12 px-4 py-12 md:py-20 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-24">
           <div className="order-2 lg:order-1">
@@ -86,12 +65,8 @@ function Home() {
             <div className="mt-8">
               <ContactButtons message="שלום לילך, אשמח לקבל פרטים והצעת מחיר" />
             </div>
-
             {upcoming[0] && (
-              <Link
-                to="/shows"
-                className="glass mt-8 inline-flex items-center gap-3 rounded-2xl border-primary/20 px-5 py-3 text-sm transition hover:border-primary/50"
-              >
+              <Link to="/shows" className="glass mt-8 inline-flex items-center gap-3 rounded-2xl border-primary/20 px-5 py-3 text-sm transition hover:border-primary/50">
                 <span className="rounded-full bg-primary/20 px-3 py-1 text-xs text-primary">המופע הבא</span>
                 <span className="font-medium">{upcoming[0].title}</span>
                 <ChevronLeft className="h-4 w-4 text-primary" />
@@ -105,22 +80,14 @@ function Home() {
               <div className="relative overflow-hidden rounded-[2rem] border border-primary/30 shadow-elegant">
                 <div className="relative h-[520px] w-full md:h-[640px]">
                   {HERO_SLIDES.map((src, i) => (
-                    <img
-                      key={i}
-                      src={src}
-                      alt={`לילך טייב - הופעה ${i + 1}`}
-                      className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-in-out ${i === slide ? "opacity-100" : "opacity-0"}`}
-                    />
+                    <img key={i} src={src} alt={`לילך טייב - הופעה ${i + 1}`}
+                      className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-in-out ${i === slide ? "opacity-100" : "opacity-0"}`} />
                   ))}
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
                   <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2">
                     {HERO_SLIDES.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setSlide(i)}
-                        aria-label={`שקופית ${i + 1}`}
-                        className={`h-1.5 rounded-full transition-all ${i === slide ? "w-8 bg-primary" : "w-3 bg-cream/50"}`}
-                      />
+                      <button key={i} onClick={() => setSlide(i)} aria-label={`שקופית ${i + 1}`}
+                        className={`h-1.5 rounded-full transition-all ${i === slide ? "w-8 bg-primary" : "w-3 bg-cream/50"}`} />
                     ))}
                   </div>
                 </div>
@@ -130,15 +97,10 @@ function Home() {
         </div>
       </section>
 
-      {/* HIGHLIGHTS */}
       <section className="container mx-auto px-4 py-16">
         <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
           {HIGHLIGHTS.map((h) => (
-            <Link
-              key={h.to}
-              to={h.to}
-              className="group bg-gradient-card relative overflow-hidden rounded-2xl border border-border/60 p-6 transition hover:border-primary/50 hover:shadow-glow"
-            >
+            <Link key={h.to} to={h.to} className="group bg-gradient-card relative overflow-hidden rounded-2xl border border-border/60 p-6 transition hover:border-primary/50 hover:shadow-glow">
               <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
                 <h.icon className="h-6 w-6" />
               </div>
@@ -149,36 +111,27 @@ function Home() {
         </div>
       </section>
 
-      {/* GALLERY */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="mb-10 text-center">
-          <p className="mb-3 text-xs tracking-display text-primary">PHOTO GALLERY</p>
-          <h2 className="font-display text-4xl md:text-5xl">
-            <span className="text-gradient-gold italic">גלריית הופעות</span>
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-            רגעים מהבמה, מהאירועים ומהמופעים החיים
-          </p>
-        </div>
-        <div className="grid auto-rows-[180px] grid-cols-4 gap-4 md:auto-rows-[220px] lg:auto-rows-[260px]">
-          {GALLERY.map((item, i) => (
-            <div
-              key={i}
-              className={`group relative overflow-hidden rounded-2xl border border-border/40 ${item.className}`}
-            >
-              <img
-                src={item.src}
-                alt={`הופעה ${i + 1}`}
-                loading="lazy"
-                className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-50 transition group-hover:opacity-20" />
-            </div>
-          ))}
-        </div>
-      </section>
+      {gallery.length > 0 && (
+        <section className="container mx-auto px-4 py-16">
+          <div className="mb-10 text-center">
+            <p className="mb-3 text-xs tracking-display text-primary">PHOTO GALLERY</p>
+            <h2 className="font-display text-4xl md:text-5xl">
+              <span className="text-gradient-gold italic">גלריית הופעות</span>
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">רגעים מהבמה, מהאירועים ומהמופעים החיים</p>
+          </div>
+          <div className="grid auto-rows-[180px] grid-cols-4 gap-4 md:auto-rows-[220px] lg:auto-rows-[260px]">
+            {gallery.map((item, i) => (
+              <div key={item.id} className={`group relative overflow-hidden rounded-2xl border border-border/40 ${item.span_class ?? "col-span-1 row-span-1"}`}>
+                <img src={item.image_url} alt={item.alt ?? `הופעה ${i + 1}`} loading="lazy"
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-50 transition group-hover:opacity-20" />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* CTA */}
       <section className="container mx-auto px-4 py-20">
         <div className="bg-gradient-card relative overflow-hidden rounded-3xl border border-primary/20 p-10 text-center md:p-16">
           <div className="absolute -top-20 left-1/2 h-60 w-60 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
@@ -188,9 +141,7 @@ function Home() {
           <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
             אני כאן לכל שאלה, בקשה והצעת מחיר - מוזמנת להתקשר או לכתוב לי בוואטסאפ
           </p>
-          <div className="mt-8 flex justify-center">
-            <ContactButtons />
-          </div>
+          <div className="mt-8 flex justify-center"><ContactButtons /></div>
         </div>
       </section>
     </>
