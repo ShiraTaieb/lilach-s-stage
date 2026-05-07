@@ -88,11 +88,11 @@ export function AdminSection({ table, title, fields, orderBy, ascending = true, 
       payload[f.name] = v;
     });
     if (editing.id) {
-      const { error } = await supabase.from(table).update(payload).eq("id", editing.id as string);
+      const { error } = await supabase.from(table).update(payload as never).eq("id", editing.id as string);
       if (error) return toast.error(error.message);
       toast.success("נשמר");
     } else {
-      const { error } = await supabase.from(table).insert(payload);
+      const { error } = await supabase.from(table).insert(payload as never);
       if (error) return toast.error(error.message);
       toast.success("נוסף");
     }
