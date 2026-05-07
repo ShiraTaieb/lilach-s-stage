@@ -150,7 +150,7 @@ export function AdminSection({ table, title, fields, orderBy, ascending = true, 
                     </select>
                   ) : f.type === "image" ? (
                     <div className="space-y-2">
-                      {editing[f.name] && <img src={String(editing[f.name])} alt="" className="h-24 w-full rounded-lg object-cover" />}
+                      {editing[f.name] ? <img src={String(editing[f.name])} alt="" className="h-24 w-full rounded-lg object-cover" /> : null}
                       <div className="flex items-center gap-2">
                         <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-input bg-background/60 px-3 py-2 text-sm hover:border-primary">
                           <Upload className="h-4 w-4" />
