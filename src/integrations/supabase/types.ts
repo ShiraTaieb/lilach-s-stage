@@ -32,59 +32,74 @@ export type Database = {
         }
         Relationships: []
       }
-      booking_shows: {
+      events: {
         Row: {
           created_at: string
           description: string
+          event_date: string | null
           id: string
           image_url: string | null
+          kind: string
+          slug: string | null
           sort_order: number
           title: string
           updated_at: string
+          venue: string | null
         }
         Insert: {
           created_at?: string
           description?: string
+          event_date?: string | null
           id?: string
           image_url?: string | null
+          kind: string
+          slug?: string | null
           sort_order?: number
           title: string
           updated_at?: string
+          venue?: string | null
         }
         Update: {
           created_at?: string
           description?: string
+          event_date?: string | null
           id?: string
           image_url?: string | null
+          kind?: string
+          slug?: string | null
           sort_order?: number
           title?: string
           updated_at?: string
+          venue?: string | null
         }
         Relationships: []
       }
-      equipment: {
+      gallery: {
         Row: {
+          alt: string | null
           created_at: string
-          description: string
           id: string
-          name: string
+          image_url: string
           sort_order: number
+          span_class: string | null
           updated_at: string
         }
         Insert: {
+          alt?: string | null
           created_at?: string
-          description?: string
           id?: string
-          name: string
+          image_url: string
           sort_order?: number
+          span_class?: string | null
           updated_at?: string
         }
         Update: {
+          alt?: string | null
           created_at?: string
-          description?: string
           id?: string
-          name?: string
+          image_url?: string
           sort_order?: number
+          span_class?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -97,6 +112,7 @@ export type Database = {
           image_url: string | null
           price: number
           song_name: string
+          sort_order: number
           updated_at: string
         }
         Insert: {
@@ -106,6 +122,7 @@ export type Database = {
           image_url?: string | null
           price?: number
           song_name: string
+          sort_order?: number
           updated_at?: string
         }
         Update: {
@@ -115,17 +132,17 @@ export type Database = {
           image_url?: string | null
           price?: number
           song_name?: string
+          sort_order?: number
           updated_at?: string
         }
         Relationships: []
       }
-      private_events: {
+      services: {
         Row: {
           created_at: string
           description: string
           id: string
           image_url: string | null
-          slug: string
           sort_order: number
           title: string
           updated_at: string
@@ -135,7 +152,6 @@ export type Database = {
           description?: string
           id?: string
           image_url?: string | null
-          slug: string
           sort_order?: number
           title: string
           updated_at?: string
@@ -145,43 +161,9 @@ export type Database = {
           description?: string
           id?: string
           image_url?: string | null
-          slug?: string
           sort_order?: number
           title?: string
           updated_at?: string
-        }
-        Relationships: []
-      }
-      upcoming_shows: {
-        Row: {
-          created_at: string
-          description: string
-          event_date: string
-          id: string
-          image_url: string | null
-          title: string
-          updated_at: string
-          venue: string | null
-        }
-        Insert: {
-          created_at?: string
-          description?: string
-          event_date: string
-          id?: string
-          image_url?: string | null
-          title: string
-          updated_at?: string
-          venue?: string | null
-        }
-        Update: {
-          created_at?: string
-          description?: string
-          event_date?: string
-          id?: string
-          image_url?: string | null
-          title?: string
-          updated_at?: string
-          venue?: string | null
         }
         Relationships: []
       }
