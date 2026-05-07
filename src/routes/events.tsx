@@ -2,9 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import batMitzvahImg from "@/assets/event-batmitzvah.jpg";
-import challahImg from "@/assets/event-challah.jpg";
-import brideImg from "@/assets/event-bride.jpg";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -16,16 +13,10 @@ export const Route = createFileRoute("/events")({
   component: EventsPage,
 });
 
-const FALLBACK_IMG: Record<string, string> = {
-  "bat-mitzvah": batMitzvahImg,
-  "hafrashat-challah": challahImg,
-  "brides-evening": brideImg,
-};
-
 interface PrivateEvent {
   id: string;
   title: string;
-  slug: string;
+  slug: string | null;
   description: string;
   image_url: string | null;
   sort_order: number;
@@ -36,10 +27,11 @@ function EventsPage() {
 
   useEffect(() => {
     supabase
-      .from("private_events")
-      .select("*")
+      .from("events")
+      .select("id,title,slug,description,image_url,sort_order")
+      .eq("kind", "private")
       .order("sort_order")
-      .then(({ data }) => setItems(data ?? []));
+      .then(({ data }) => setItems((data ?? []) as PrivateEvent[]));
   }, []);
 
   return (
@@ -59,23 +51,23 @@ function EventsPage() {
           <Link
             key={ev.id}
             to="/events/$slug"
-            params={{ slug: ev.slug }}
+            params={{ slug: ev.slug ?? ev.id }}
             className="group bg-gradient-card relative overflow-hidden rounded-3xl border border-border/60 transition hover:border-primary/50 hover:shadow-glow"
           >
             <div className="aspect-[4/3] overflow-hidden">
-              <img
-                src={ev.image_url || FALLBACK_IMG[ev.slug] || batMitzvahImg}
-                alt={ev.title}
-                loading="lazy"
-                className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
-              />
+              {ev.image_url && (
+                <img
+                  src={ev.image_url}
+                  alt={ev.title}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+                />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent opacity-80" />
             </div>
             <div className="relative -mt-20 p-6">
               <h3 className="font-display text-3xl italic text-foreground">{ev.title}</h3>
-              <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
-                {ev.description}
-              </p>
+              <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{ev.description}</p>
               <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary/15 px-4 py-2 text-sm font-medium text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
                 לפרטים נוספים
                 <ChevronLeft className="h-4 w-4" />

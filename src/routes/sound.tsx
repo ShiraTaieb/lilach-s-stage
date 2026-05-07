@@ -16,12 +16,13 @@ export const Route = createFileRoute("/sound")({
   component: SoundPage,
 });
 
-interface Equipment { id: string; name: string; description: string }
+interface Service { id: string; title: string; description: string }
 
 function SoundPage() {
-  const [items, setItems] = useState<Equipment[]>([]);
+  const [items, setItems] = useState<Service[]>([]);
   useEffect(() => {
-    supabase.from("equipment").select("*").order("sort_order").then(({ data }) => setItems(data ?? []));
+    supabase.from("services").select("id,title,description").order("sort_order")
+      .then(({ data }) => setItems((data ?? []) as Service[]));
   }, []);
 
   return (
@@ -54,13 +55,13 @@ function SoundPage() {
             <img src={soundImg} alt="ציוד הגברה" className="aspect-[4/3] w-full object-cover" />
           </div>
           <div className="bg-gradient-card rounded-3xl border border-border/60 p-6">
-            <h2 className="mb-4 font-display text-2xl italic">הציוד שלנו</h2>
+            <h2 className="mb-4 font-display text-2xl italic">השירותים והציוד שלנו</h2>
             <ul className="space-y-3">
               {items.map((eq) => (
                 <li key={eq.id} className="flex gap-3 border-b border-border/40 pb-3 last:border-0 last:pb-0">
                   <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" />
                   <div>
-                    <p className="font-semibold">{eq.name}</p>
+                    <p className="font-semibold">{eq.title}</p>
                     {eq.description && <p className="text-sm text-muted-foreground">{eq.description}</p>}
                   </div>
                 </li>

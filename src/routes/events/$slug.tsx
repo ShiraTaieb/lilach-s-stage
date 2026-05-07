@@ -1,17 +1,8 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ContactButtons } from "@/components/contact-buttons";
-import batMitzvahImg from "@/assets/event-batmitzvah.jpg";
-import challahImg from "@/assets/event-challah.jpg";
-import brideImg from "@/assets/event-bride.jpg";
-
-const FALLBACK_IMG: Record<string, string> = {
-  "bat-mitzvah": batMitzvahImg,
-  "hafrashat-challah": challahImg,
-  "brides-evening": brideImg,
-};
 
 export const Route = createFileRoute("/events/$slug" as any)({
   head: ({ params }) => ({
@@ -26,7 +17,7 @@ export const Route = createFileRoute("/events/$slug" as any)({
 interface PrivateEvent {
   id: string;
   title: string;
-  slug: string;
+  slug: string | null;
   description: string;
   image_url: string | null;
 }
@@ -38,12 +29,13 @@ function EventDetailPage() {
 
   useEffect(() => {
     supabase
-      .from("private_events")
-      .select("*")
+      .from("events")
+      .select("id,title,slug,description,image_url")
+      .eq("kind", "private")
       .eq("slug", slug)
       .maybeSingle()
       .then(({ data }) => {
-        setEv(data);
+        setEv(data as PrivateEvent | null);
         setLoading(false);
       });
   }, [slug]);
@@ -66,11 +58,9 @@ function EventDetailPage() {
 
       <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-start">
         <div className="overflow-hidden rounded-3xl border border-primary/20 shadow-elegant">
-          <img
-            src={ev.image_url || FALLBACK_IMG[ev.slug] || batMitzvahImg}
-            alt={ev.title}
-            className="aspect-[4/3] w-full object-cover"
-          />
+          {ev.image_url && (
+            <img src={ev.image_url} alt={ev.title} className="aspect-[4/3] w-full object-cover" />
+          )}
         </div>
 
         <div>
