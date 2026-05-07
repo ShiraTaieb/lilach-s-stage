@@ -22,47 +22,75 @@ export function ContactButtons({
   const sizes = variant === "compact" ? "px-5 py-2" : "px-8 py-3.5";
 
   return (
-    <div className={cn("flex flex-wrap gap-6 p-4 bg-black/10 rounded-xl", className)}>
+    <div className={cn("flex flex-wrap gap-6 p-6 bg-black/5 rounded-xl", className)}>
       
-      {/* כפתור התקשרי - זהב יוקרתי (טקסט ומסגרת זהב) */}
-      <a
-        href={telHref(phone)}
-        className={cn(
-          "relative inline-flex items-center gap-3 rounded-full font-bold transition-all duration-300 whitespace-nowrap",
-          "border-[1.5px] border-[#FCF6BA]/60", // מסגרת זהב בהיר מבריקה
-          "bg-gradient-to-b from-[#C5A028] via-[#F2EBDC] to-[#8B6508]", // גרדיאנט כפתור זהב
-          "text-[#402012] shadow-[0_10px_20px_rgba(0,0,0,0.4),inset_0_2px_3px_rgba(255,255,255,0.7)]",
-          "hover:scale-105 active:scale-95",
-          sizes
-        )}
-        dir="ltr"
-      >
-        {/* אייקון וטקסט עם צל שנותן להם מראה חרוט בזהב */}
-        <Phone className="h-5 w-5 drop-shadow-[0_1px_1px_rgba(252,246,186,1)]" strokeWidth={2.5} />
-        <span className="drop-shadow-[0_1px_1px_rgba(252,246,186,0.8)]">
-          {showNumber ? formatPhone(phone) : "התקשרי"}
-        </span>
-      </a>
-
-      {/* כפתור WhatsApp - כסף/סגול (טקסט ומסגרת כסף) */}
+      {/* כפתור WhatsApp - סגול חציל-פנינה-סגול (קריא ויוקרתי) */}
       <a
         href={waHref(phone, message)}
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
-          "relative inline-flex items-center gap-3 rounded-full font-bold transition-all duration-300 whitespace-nowrap",
-          "border-[1.5px] border-[#D1D1D1]/60", // מסגרת כסופה מבריקה
-          "bg-gradient-to-b from-[#4A1D75] via-[#A898D9] to-[#1A052D]", // גרדיאנט סגול-כסוף
-          "text-[#F2EBDC] shadow-[0_0_25px_rgba(168,152,217,0.4),inset_0_3px_5px_rgba(255,255,255,0.4)]",
+          "relative inline-flex items-center gap-3 rounded-full transition-all duration-300 whitespace-nowrap",
+          // מסגרת מתכתית כסופה מבריקה (מסביב לכפתור)
+          "border-[1.5px] border-[#D1D1D1]/60 shadow-[0_0_8px_rgba(255,255,255,0.4),inset_0_1px_2px_rgba(255,255,255,0.5)]",
+          // גרדיאנט כפתור: סגול חציל עמוק -> שילוב פנינה בהיר (התבנית ששלחת) -> סגול עמוק
+          "bg-gradient-to-r from-[#2A1045] via-[#A898D9] to-[#1F0835]",
+          // הילה סגולה מסביב לכפתור (Glow)
+          "shadow-[0_0_20px_10px_rgba(42,16,69,0.3)]",
+          // צבע טקסט בסיס (לגיבוי) ואפקט מתכתי תלת-ממדי
+          "text-[#F2EBDC] overflow-hidden",
           "hover:scale-105 active:scale-95",
           sizes
         )}
         dir="ltr"
       >
-        {/* אייקון וטקסט עם צל כסוף בוהק (כמו בתמונה) */}
-        <WhatsAppIcon className="h-5 w-5 fill-[#F2EBDC] drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]" />
-        <span className="drop-shadow-[0_0_5px_rgba(255,255,255,0.6)]">
+        {/* אייקון WhatsApp - מתכתי תלת-ממדי כסוף */}
+        <WhatsAppIcon className="h-5 w-5 fill-white drop-shadow-[0_0_3px_rgba(255,255,255,0.7),inset_0_1px_1px_rgba(0,0,0,0.5)]" />
+        
+        {/* טקסט WhatsApp - מתכתי תלת-ממדי כסוף (שילוב כסוף בוהק מהפנינה) */}
+        <span className="font-bold font-metallic-silver"
+          style={{
+            background: "linear-gradient(to b, #A898D9, #F2EBDC, #2A1045)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            filter: "drop-shadow(0px 1px 0px rgba(255,255,255,1)) drop-shadow(0px 2px 3px rgba(0,0,0,0.5))"
+          }}
+        >
           {showNumber ? formatPhone(phone) : "WhatsApp"}
+        </span>
+      </a>
+
+      {/* כפתור התקשרי - זהב-פנינה-זהב (תלת-ממדי) */}
+      <a
+        href={telHref(phone)}
+        className={cn(
+          "relative inline-flex items-center gap-3 rounded-full transition-all duration-300 whitespace-nowrap",
+          // מסגרת מתכתית זהב מבריקה (מסביב לכפתור)
+          "border-[1.5px] border-[#FCF6BA]/60 shadow-[0_0_8px_rgba(252,246,186,0.4),inset_0_1px_2px_rgba(252,246,186,0.5)]",
+          // גרדיאנט כפתור: זהב עמוק -> שילוב פנינה בהיר (התבנית ששלחת) -> זהב עמוק
+          "bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]",
+          // הילה זהב מסביב לכפתור (Glow)
+          "shadow-[0_0_20px_10px_rgba(191,149,63,0.3)]",
+          // צבע טקסט בסיס (לגיבוי) ואפקט מתכתי תלת-ממדי
+          "text-[#402012] overflow-hidden",
+          "hover:scale-105 active:scale-95",
+          sizes
+        )}
+        dir="ltr"
+      >
+        {/* אייקון Phone - מתכתי תלת-ממדי זהב */}
+        <Phone className="h-5 w-5 drop-shadow-[0_0_3px_rgba(252,246,186,0.7),inset_0_1px_1px_rgba(0,0,0,0.5)] text-[#FCF6BA]" strokeWidth={2.5} />
+        
+        {/* טקסט התקשרי - מתכתי תלת-ממדי זהב (שילוב זהב בוהק מהפנינה) */}
+        <span className="font-bold"
+          style={{
+            background: "linear-gradient(to b, #BF953F, #FCF6BA, #402012)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            filter: "drop-shadow(0px 1px 0px rgba(252,246,186,1)) drop-shadow(0px 2px 3px rgba(0,0,0,0.5))"
+          }}
+        >
+          {showNumber ? formatPhone(phone) : "התקשרי"}
         </span>
       </a>
 
