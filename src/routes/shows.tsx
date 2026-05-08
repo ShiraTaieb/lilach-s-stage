@@ -72,6 +72,11 @@ function ShowsPage() {
                       <Countdown date={s.event_date} />
                     </div>
                   )}
+                  
+                  {/* הוספתי כפתור התקשרות גם למופעים הקרובים למקרה שירצו להזמין כרטיסים */}
+                  <div className="mt-6 border-t border-white/5 pt-4">
+                    <ContactButtons variant="expandable" />
+                  </div>
                 </div>
               </div>
             ))}
@@ -95,7 +100,8 @@ function ShowsPage() {
                 <h3 className="font-display text-2xl italic">{s.title}</h3>
                 <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{s.description}</p>
                 <div className="mt-5">
-                  <ContactButtons variant="compact" message={`שלום לילך, אשמח לפרטים על ${s.title}`} />
+                  {/* השינוי המרכזי כאן: מעבר ל-expandable למראה נקי ויוקרתי */}
+                  <ContactButtons variant="expandable" />
                 </div>
               </div>
             </div>
