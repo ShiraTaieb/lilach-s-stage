@@ -73,9 +73,13 @@ function ShowsPage() {
                     </div>
                   )}
                   
-                  {/* הוספתי כפתור התקשרות גם למופעים הקרובים למקרה שירצו להזמין כרטיסים */}
                   <div className="mt-6 border-t border-white/5 pt-4">
-                    <ContactButtons variant="expandable" />
+                    {/* טקסט מותאם למופעים קרובים */}
+                    <ContactButtons 
+                        variant="expandable" 
+                        label="להזמנת כרטיסים" 
+                        message={`שלום לילך, אשמח להזמין כרטיס למופע: ${s.title}`}
+                    />
                   </div>
                 </div>
               </div>
@@ -100,8 +104,12 @@ function ShowsPage() {
                 <h3 className="font-display text-2xl italic">{s.title}</h3>
                 <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{s.description}</p>
                 <div className="mt-5">
-                  {/* השינוי המרכזי כאן: מעבר ל-expandable למראה נקי ויוקרתי */}
-                  <ContactButtons variant="expandable" />
+                  {/* טקסט מותאם להזמנת מופע פרטי */}
+                  <ContactButtons 
+                    variant="expandable" 
+                    label="להזמנת המופע" 
+                    message={`שלום לילך, אשמח לפרטים על הזמנת המופע: ${s.title}`}
+                  />
                 </div>
               </div>
             </div>
