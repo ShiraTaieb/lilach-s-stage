@@ -1,103 +1,48 @@
-import { Phone, Mail } from "lucide-react";
+import { Phone, Mail, MessageCircle } from "lucide-react";
 import { WhatsAppIcon } from "./whatsapp-icon";
-import { telHref, waHref, formatPhone, PHONE_PRIMARY } from "@/lib/contact";
+import { telHref, waHref, PHONE_PRIMARY } from "@/lib/contact";
 import { cn } from "@/lib/utils";
 
-interface Props {
-  phone?: string;
-  email?: string;
-  message?: string;
-  variant?: "default" | "compact";
-  className?: string;
-  showNumber?: boolean;
-}
-
-export function ContactButtons({ 
-  phone = PHONE_PRIMARY, 
-  email = "office@example.com",
-  message, 
-  variant = "default", 
-  className, 
-  showNumber = false 
-}: Props) {
-  
-  const sizes = variant === "compact" ? "px-4 py-2 text-sm" : "px-7 py-3.5 text-base";
-
+export function UnifiedContactButton({ phone = PHONE_PRIMARY, email = "office@example.com" }) {
   return (
-    <div className={cn("flex flex-wrap gap-5 p-4", className)}>
+    <div className="flex flex-col items-center gap-4 p-4">
       
-      {/* כפתור WhatsApp - כסף תלת-ממדי בולט */}
-      <a
-        href={waHref(phone, message)}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={cn(
-          "relative inline-flex items-center gap-2.5 rounded-full font-bold transition-all duration-300",
-          "border-[1.5px] border-[#D1D1D1]/50 shadow-[0_0_15px_rgba(168,152,217,0.3),inset_0_1px_2px_rgba(255,255,255,0.6)]",
-          "bg-gradient-to-r from-[#2A1045] via-[#A898D9] to-[#1F0835]",
-          "hover:scale-105 active:scale-95",
-          sizes
-        )}
-        dir="ltr"
-      >
-        <WhatsAppIcon className="h-5 w-5 fill-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.5)]" />
-        <span className="tracking-wide"
-          style={{
-            color: "#F2EBDC",
-            textShadow: "0px 1px 0px #FFFFFF, 0px -1px 1px rgba(0,0,0,0.6), 0px 2px 4px rgba(0,0,0,0.5)"
-          }}
+      {/* כפתור מאוחד: וואטסאפ וחיוג */}
+      <div className={cn(
+        "relative flex items-center rounded-full transition-all duration-300 overflow-hidden",
+        "border-[1.5px] border-[#FCF6BA]/60 shadow-[0_10px_20px_rgba(0,0,0,0.4)]",
+        "bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]"
+      )}>
+        
+        {/* צד א': וואטסאפ */}
+        <a
+          href={waHref(phone, "היי, אשמח לקבל פרטים נוספים...")}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-6 py-4 hover:bg-white/10 transition-colors border-l border-[#402012]/20"
         >
-          WhatsApp
-        </span>
-      </a>
+          <WhatsAppIcon className="h-6 w-6 fill-[#402012] drop-shadow-sm" />
+          <span className="font-bold text-[#402012] text-shadow-sm">הודעה</span>
+        </a>
 
-      {/* כפתור התקשרי - זהב חרוט בברזל */}
-      <a
-        href={telHref(phone)}
-        className={cn(
-          "relative inline-flex items-center gap-2.5 rounded-full font-bold transition-all duration-300",
-          "border-[1.5px] border-[#FCF6BA]/60 shadow-[0_5px_15px_rgba(0,0,0,0.3),inset_0_1px_2px_rgba(252,246,186,0.6)]",
-          "bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]",
-          "hover:scale-105 active:scale-95",
-          sizes
-        )}
-        dir="ltr"
-      >
-        <Phone className="h-5 w-5 text-[#402012] drop-shadow-[0_1px_0px_rgba(252,246,186,0.5)]" strokeWidth={2.5} />
-        <span className="tracking-wide"
-          style={{
-            color: "#402012",
-            // אפקט חריטה: צל בהיר למטה (Highlight) וצל כהה למעלה (Depth)
-            textShadow: "0px 1px 1px rgba(252,246,186,0.8), 0px -1px 1px rgba(0,0,0,0.4)"
-          }}
+        {/* צד ב': חיוג מהיר */}
+        <a
+          href={telHref(phone)}
+          className="flex items-center gap-2 px-6 py-4 hover:bg-white/10 transition-colors"
         >
-          {showNumber ? formatPhone(phone) : "התקשרי"}
-        </span>
-      </a>
+          <Phone className="h-5 w-5 text-[#402012]" strokeWidth={2.5} />
+          <span className="font-bold text-[#402012]">חיוג</span>
+        </a>
+      </div>
 
-      {/* כפתור מייל - כסף מתכתי יוקרתי */}
+      {/* כפתור מייל עדין וקטן יותר מתחת */}
       <a
         href={`mailto:${email}`}
-        className={cn(
-          "relative inline-flex items-center gap-2.5 rounded-full font-bold transition-all duration-300",
-          "border-[1.5px] border-[#D1D1D1]/40 shadow-[0_0_12px_rgba(255,255,255,0.1)]",
-          "bg-gradient-to-r from-[#1a1a1a] via-[#4a4a4a] to-[#000000]",
-          "hover:scale-105 active:scale-95",
-          sizes
-        )}
-        dir="ltr"
+        className="flex items-center gap-2 text-[#FCF6BA]/80 hover:text-[#FCF6BA] transition-colors text-sm font-medium"
       >
-        <Mail className="h-5 w-5 text-[#F2EBDC] drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
-        <span className="tracking-wide"
-          style={{
-            color: "#F2EBDC",
-            textShadow: "0px 1px 0px #FFFFFF, 0px -1px 1px rgba(0,0,0,0.6)"
-          }}
-        >
-          E-mail
-        </span>
+        <Mail className="h-4 w-4" />
+        <span className="underline underline-offset-4">או שלחי לנו מייל</span>
       </a>
-
     </div>
   );
 }
