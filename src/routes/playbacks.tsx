@@ -88,7 +88,12 @@ function PlaybacksPage() {
         <h2 className="font-display text-2xl italic">לרכישת פלייבק</h2>
         <p className="mt-2 text-muted-foreground">צרי איתי קשר עם שם השיר שמעניין אותך</p>
         <div className="mt-5 flex justify-center">
-          <ContactButtons message="שלום לילך, אשמח לרכוש פלייבק" />
+          {/* עדכון הקומפוננטה לדינמית - שינוי variant וטקסט הכפתור */}
+          <ContactButtons 
+            variant="expandable" 
+            label="לרכישת פלייבק"
+            message="שלום לילך, אשמח לרכוש פלייבק מהאתר" 
+          />
         </div>
       </div>
     </div>
