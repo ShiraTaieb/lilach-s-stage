@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { ContactButtons } from "@/components/contact-buttons";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -48,32 +49,53 @@ function EventsPage() {
 
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {items.map((ev) => (
-          <Link
+          <div
             key={ev.id}
-            to="/events/$slug"
-            params={{ slug: ev.slug ?? ev.id }}
-            className="group bg-gradient-card relative overflow-hidden rounded-3xl border border-border/60 transition hover:border-primary/50 hover:shadow-glow"
+            className="group bg-gradient-card relative overflow-hidden rounded-3xl border border-border/60 transition hover:border-primary/50"
           >
-            <div className="aspect-[4/3] overflow-hidden">
-              {ev.image_url && (
-                <img
-                  src={ev.image_url}
-                  alt={ev.title}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent opacity-80" />
-            </div>
+            <Link
+              to="/events/$slug"
+              params={{ slug: ev.slug ?? ev.id }}
+              className="block cursor-pointer"
+            >
+              <div className="aspect-[4/3] overflow-hidden">
+                {ev.image_url && (
+                  <img
+                    src={ev.image_url}
+                    alt={ev.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent opacity-80" />
+              </div>
+            </Link>
+
             <div className="relative -mt-20 p-6">
-              <h3 className="font-display text-3xl italic text-foreground">{ev.title}</h3>
-              <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{ev.description}</p>
-              <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary/15 px-4 py-2 text-sm font-medium text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
-                לפרטים נוספים
-                <ChevronLeft className="h-4 w-4" />
+              <Link to="/events/$slug" params={{ slug: ev.slug ?? ev.id }}>
+                <h3 className="font-display text-3xl italic text-foreground">{ev.title}</h3>
+                <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{ev.description}</p>
+              </Link>
+
+              <div className="mt-6 flex flex-col gap-4">
+                <Link 
+                  to="/events/$slug" 
+                  params={{ slug: ev.slug ?? ev.id }}
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-primary/10 py-2 text-sm font-medium text-primary transition hover:bg-primary/20"
+                >
+                  לגלריית תמונות ופרטים
+                  <ChevronLeft className="h-4 w-4" />
+                </Link>
+
+                {/* הכפתור המתנפח החדש - מותאם אישית לכל סוג אירוע */}
+                <ContactButtons 
+                  variant="expandable" 
+                  label="להזמנת האירוע" 
+                  message={`היי לילך, אשמח לקבל פרטים והצעת מחיר עבור: ${ev.title}`}
+                />
               </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>
