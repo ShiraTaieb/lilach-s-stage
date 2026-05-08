@@ -11,10 +11,8 @@ export function SiteFooter() {
             <p className="text-sm leading-relaxed text-muted-foreground">
               זמרת לנשים | הופעות חיות, מופעי נשים, אולפן הקלטות והשכרת ציוד הגברה מקצועי.
             </p>
-            <div className="mt-4">
-              <ContactButtons variant="compact" />
-            </div>
           </div>
+          
           <div>
             <h4 className="mb-3 font-semibold text-primary">ניווט</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -26,13 +24,17 @@ export function SiteFooter() {
               <li><Link to="/playbacks" className="hover:text-primary">פלייבקים</Link></li>
             </ul>
           </div>
+
           <div>
             <h4 className="mb-3 font-semibold text-primary">יצירת קשר</h4>
-            <p className="text-sm text-muted-foreground">
+            <p className="mb-6 text-sm text-muted-foreground">
               לכל שאלה, בקשה או הזמנה - אני כאן בשבילך, מוזמנת ליצור קשר בכל אמצעי שנוח לך.
             </p>
+            {/* שימוש בגרסה המפוארת והמאוחדת לסיום חוויית המשתמש */}
+            <ContactButtons variant="solid" className="items-start" />
           </div>
         </div>
+
         <div className="mt-10 border-t border-border/60 pt-6 text-center text-xs text-muted-foreground">
           <p>לילך טייב - זמרת לנשים | כל הזכויות שמורות © {new Date().getFullYear()}</p>
           <p className="mt-2">
