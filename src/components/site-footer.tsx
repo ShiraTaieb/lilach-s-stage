@@ -30,8 +30,9 @@ export function SiteFooter() {
             <p className="mb-6 text-sm text-muted-foreground">
               לכל שאלה, בקשה או הזמנה - אני כאן בשבילך, מוזמנת ליצור קשר בכל אמצעי שנוח לך.
             </p>
-            {/* שימוש בגרסה המפוארת והמאוחדת לסיום חוויית המשתמש */}
-            <ContactButtons variant="solid" className="items-start" />
+            
+            {/* התיקון כאן: שינוי מ-solid ל-minimal כדי לקבל אייקונים עגולים ועדינים */}
+            <ContactButtons variant="minimal" className="items-start" />
           </div>
         </div>
 
