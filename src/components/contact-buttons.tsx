@@ -10,6 +10,7 @@ interface ContactButtonsProps {
   variant?: "solid" | "minimal" | "expandable";
   className?: string;
   message?: string;
+  label?: string; // <--- הוספנו משתנה לטקסט שעל הכפתור
 }
 
 export function ContactButtons({ 
@@ -17,7 +18,8 @@ export function ContactButtons({
   email = "office@lilachtayeb.co.il",
   variant = "solid",
   className,
-  message
+  message,
+  label = "ליצירת קשר" // ברירת מחדל כללית
 }: ContactButtonsProps) {
   const [currentPath, setCurrentPath] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +34,6 @@ export function ContactButtons({
 
   const whatsappMessage = message || `היי לילך, הגעתי מהאתר (מעמוד: ${currentPath || 'כללי'}), אשמח לפרטים: `;
 
-  // --- אפשרות 1: המצב המינימלי (עיגולים תואמים - פוטר/Hero) ---
   if (variant === "minimal") {
     return (
       <div className={cn("flex items-center gap-4", className)}>
@@ -49,39 +50,31 @@ export function ContactButtons({
     );
   }
 
-  // --- אפשרות 2: המצב המתנפח (לכרטיסים) - כולל מייל עכשיו ---
   if (variant === "expandable") {
     return (
       <div className={cn("flex flex-col items-center w-full", className)}>
         {!isOpen ? (
           <button 
             onClick={() => setIsOpen(true)}
-            className="group flex w-full max-w-[220px] items-center justify-center gap-2 rounded-full border border-[#FCF6BA]/50 bg-gradient-to-r from-[#BF953F]/20 to-[#B38728]/20 py-2.5 text-sm font-medium text-[#FCF6BA] transition-all hover:bg-[#FCF6BA]/20 shadow-lg"
+            className="group flex w-full max-w-[240px] items-center justify-center gap-2 rounded-full border border-[#FCF6BA]/50 bg-gradient-to-r from-[#BF953F]/20 to-[#B38728]/20 py-2.5 text-sm font-medium text-[#FCF6BA] transition-all hover:bg-[#FCF6BA]/20 shadow-lg"
           >
-            להזמנת המופע
+            {label} {/* <--- כאן הטקסט הופך לדינמי */}
             <ChevronDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
           </button>
         ) : (
           <div className="flex flex-wrap justify-center items-center gap-3 animate-in fade-in zoom-in duration-300">
-            {/* וואטסאפ */}
             <a href={waHref(phone, whatsappMessage)} target="_blank" className="flex items-center gap-2 rounded-full bg-[#FCF6BA] px-4 py-2 text-xs font-bold text-[#402012] transition-transform hover:scale-105 shadow-md">
               <WhatsAppIcon className="h-4 w-4 fill-[#402012]" />
               וואטסאפ
             </a>
-            
-            {/* חיוג */}
             <a href={telHref(phone)} className="flex items-center gap-2 rounded-full border border-[#FCF6BA] px-4 py-2 text-xs font-bold text-[#FCF6BA] transition-transform hover:scale-105">
               <Phone className="h-3.5 w-3.5" />
               חיוג
             </a>
-
-            {/* מייל - התוספת החדשה */}
             <a href={`mailto:${email}`} className="flex items-center gap-2 rounded-full border border-[#FCF6BA]/60 bg-white/5 px-4 py-2 text-xs font-bold text-[#FCF6BA] transition-transform hover:scale-105">
               <Mail className="h-3.5 w-3.5" />
               מייל
             </a>
-
-            {/* כפתור סגירה X קטן */}
             <button onClick={() => setIsOpen(false)} className="ml-1 p-1 text-[#FCF6BA]/40 hover:text-[#FCF6BA] transition-colors">
               <X className="h-4 w-4" />
             </button>
@@ -91,7 +84,6 @@ export function ContactButtons({
     );
   }
 
-  // --- אפשרות 3: המצב המאוחד (ה"וואו" המקורי ב-Hero) ---
   return (
     <div className={cn("flex flex-col items-center gap-6", className)}>
       <div className="relative flex items-center overflow-hidden rounded-full border-[1.5px] border-[#FCF6BA]/60 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] shadow-[0_12px_25px_rgba(0,0,0,0.4)]">
