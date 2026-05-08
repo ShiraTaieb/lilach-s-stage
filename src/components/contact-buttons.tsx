@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 interface ContactButtonsProps {
   phone?: string;
   email?: string;
-  variant?: "solid" | "minimal"; // המצבים החדשים: יוקרתי מאוחד או אייקונים עדינים
+  variant?: "solid" | "minimal";
   className?: string;
 }
 
@@ -29,10 +29,11 @@ export function ContactButtons({
 
   const whatsappMessage = `היי לילך, הגעתי מהאתר (מעמוד: ${currentPath || 'כללי'}), אשמח לפרטים: `;
 
-  // אפשרות 1: המצב המינימלי (לאייקונים עגולים ב-Hero ובפוטר)
+  // אפשרות 1: המצב המינימלי - שלושה עיגולים נקיים (וואטסאפ, טלפון, מייל)
   if (variant === "minimal") {
     return (
       <div className={cn("flex items-center gap-4", className)}>
+        {/* וואטסאפ */}
         <a
           href={waHref(phone, whatsappMessage)}
           target="_blank"
@@ -42,6 +43,7 @@ export function ContactButtons({
           <WhatsAppIcon className="h-5 w-5 fill-[#FCF6BA]" />
         </a>
 
+        {/* טלפון */}
         <a
           href={telHref(phone)}
           className="flex h-11 w-11 items-center justify-center rounded-full border border-[#FCF6BA]/30 bg-white/5 transition-all hover:scale-110 hover:bg-white/10"
@@ -49,24 +51,21 @@ export function ContactButtons({
           <Phone className="h-5 w-5 text-[#FCF6BA]" strokeWidth={1.5} />
         </a>
 
-        {/* קישור מייל - נשאר עדין ויפה כמו שביקשת */}
+        {/* מייל - עכשיו גם הוא כפתור עיגול תואם */}
         <a
           href={`mailto:${email}`}
-          className="mr-2 flex items-center gap-2 text-[#FCF6BA]/60 transition-colors hover:text-[#FCF6BA]"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-[#FCF6BA]/30 bg-white/5 transition-all hover:scale-110 hover:bg-white/10"
         >
-          <Mail className="h-4 w-4" />
-          <span className="hidden text-[10px] font-light tracking-[0.2em] uppercase md:block">
-            Send Email
-          </span>
+          <Mail className="h-5 w-5 text-[#FCF6BA]" strokeWidth={1.5} />
         </a>
       </div>
     );
   }
 
-  // אפשרות 2: המצב המאוחד (ה"וואו" למרכז הדף)
+  // אפשרות 2: המצב המאוחד (ה"וואו" למרכז הדף) - נשאר ללא שינוי
   return (
     <div className={cn("flex flex-col items-center gap-6", className)}>
-      <div className="relative flex items-center overflow-hidden rounded-full border-[1.5px] border-[#FCF6BA]/60 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] shadow-[0_12px_25px_rgba(0,0,0,0.4)] transition-all duration-500">
+      <div className="relative flex items-center overflow-hidden rounded-full border-[1.5px] border-[#FCF6BA]/60 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] shadow-[0_12px_25 tax_rgba(0,0,0,0.4)] transition-all duration-500">
         <a
           href={waHref(phone, whatsappMessage)}
           target="_blank"
