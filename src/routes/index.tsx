@@ -50,6 +50,7 @@ function Home() {
 
   return (
     <>
+      {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="container mx-auto grid gap-12 px-4 py-12 md:py-20 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-24">
           <div className="order-2 lg:order-1">
@@ -62,9 +63,12 @@ function Home() {
               <br />
               אירועי נשים, ערבי כלות, הפרשות חלה ובת מצווה - כדי שהאירוע שלך יהיה מיוחד באמת.
             </p>
-            <div className="mt-8">
-              <ContactButtons message="שלום לילך, אשמח לקבל פרטים והצעת מחיר" />
+            
+            {/* שימוש בגרסת Ghost - עדינה ואלגנטית שלא מסתירה את התוכן */}
+            <div className="mt-8 flex justify-start">
+              <ContactButtons variant="ghost" />
             </div>
+
             {upcoming[0] && (
               <Link to="/shows" className="glass mt-8 inline-flex items-center gap-3 rounded-2xl border-primary/20 px-5 py-3 text-sm transition hover:border-primary/50">
                 <span className="rounded-full bg-primary/20 px-3 py-1 text-xs text-primary">המופע הבא</span>
@@ -97,6 +101,7 @@ function Home() {
         </div>
       </section>
 
+      {/* Highlights Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
           {HIGHLIGHTS.map((h) => (
@@ -111,6 +116,7 @@ function Home() {
         </div>
       </section>
 
+      {/* Gallery Section */}
       {gallery.length > 0 && (
         <section className="container mx-auto px-4 py-16">
           <div className="mb-10 text-center">
@@ -132,6 +138,7 @@ function Home() {
         </section>
       )}
 
+      {/* Final CTA Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="bg-gradient-card relative overflow-hidden rounded-3xl border border-primary/20 p-10 text-center md:p-16">
           <div className="absolute -top-20 left-1/2 h-60 w-60 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
@@ -141,7 +148,11 @@ function Home() {
           <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
             אני כאן לכל שאלה, בקשה והצעת מחיר - מוזמנת להתקשר או לכתוב לי בוואטסאפ
           </p>
-          <div className="mt-8 flex justify-center"><ContactButtons /></div>
+          
+          {/* שימוש בגרסת Solid - הזהב המפואר והחרוט כקריאה מרכזית לפעולה */}
+          <div className="mt-8 flex justify-center">
+            <ContactButtons variant="solid" />
+          </div>
         </div>
       </section>
     </>
