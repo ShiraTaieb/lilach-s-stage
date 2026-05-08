@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 interface ContactButtonsProps {
   phone?: string;
   email?: string;
-  variant?: "solid" | "ghost"; // שליטה על סגנון הכפתור
+  variant?: "solid" | "minimal"; // המצבים החדשים: יוקרתי מאוחד או אייקונים עדינים
   className?: string;
 }
 
@@ -19,7 +19,6 @@ export function ContactButtons({
 }: ContactButtonsProps) {
   const [currentPath, setCurrentPath] = useState("");
 
-  // זיהוי העמוד הנוכחי לצורך הודעה מובנית חכמה
   useEffect(() => {
     if (typeof window !== "undefined") {
       const path = window.location.pathname;
@@ -28,71 +27,78 @@ export function ContactButtons({
     }
   }, []);
 
-  // הגדרת הודעות מובנות חכמות
-  const whatsappMessage = `היי לילך, הגעתי מהאתר (מעמוד: ${currentPath || 'כללי'}), אשמח לקבל פרטים בנושא: `;
-  const emailSubject = encodeURIComponent(`פנייה חדשה מהאתר - ${currentPath || 'כללי'}`);
-  const emailBody = encodeURIComponent(`היי לילך,\nהגעתי מהאתר דרך עמוד ${currentPath},\nאשמח לקבל פרטים לגבי:\n\n`);
+  const whatsappMessage = `היי לילך, הגעתי מהאתר (מעמוד: ${currentPath || 'כללי'}), אשמח לפרטים: `;
 
-  // עיצובים מותנים לפי Variant
-  const isGhost = variant === "ghost";
-  
-  const containerStyles = isGhost 
-    ? "border border-[#FCF6BA]/40 bg-transparent shadow-sm" 
-    : "border-[1.5px] border-[#FCF6BA]/60 shadow-[0_12px_25px_rgba(0,0,0,0.4)] bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]";
-
-  const textStyles = isGhost ? "text-[#FCF6BA]" : "text-[#402012]";
-  const iconFill = isGhost ? "#FCF6BA" : "#402012";
-
-  return (
-    <div className={cn("flex flex-col items-center gap-6", className)}>
-      
-      {/* הכפתור המאוחד: WhatsApp + חיוג */}
-      <div className={cn(
-        "relative flex items-center rounded-full transition-all duration-500 overflow-hidden",
-        containerStyles
-      )}>
-        
-        {/* צד WhatsApp */}
+  // אפשרות 1: המצב המינימלי (לאייקונים עגולים ב-Hero ובפוטר)
+  if (variant === "minimal") {
+    return (
+      <div className={cn("flex items-center gap-4", className)}>
         <a
           href={waHref(phone, whatsappMessage)}
           target="_blank"
           rel="noopener noreferrer"
-          className={cn(
-            "flex items-center gap-2.5 px-6 py-3.5 hover:bg-white/10 transition-colors border-l",
-            isGhost ? "border-[#FCF6BA]/20" : "border-[#402012]/20"
-          )}
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-[#FCF6BA]/30 bg-white/5 transition-all hover:scale-110 hover:bg-white/10"
         >
-          <WhatsAppIcon className="h-5 w-5" style={{ fill: iconFill }} />
-          <span className={cn("font-bold tracking-wide", textStyles)}
-            style={!isGhost ? { textShadow: "0px 1px 0px rgba(252,246,186,0.8)" } : {}}>
+          <WhatsAppIcon className="h-5 w-5 fill-[#FCF6BA]" />
+        </a>
+
+        <a
+          href={telHref(phone)}
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-[#FCF6BA]/30 bg-white/5 transition-all hover:scale-110 hover:bg-white/10"
+        >
+          <Phone className="h-5 w-5 text-[#FCF6BA]" strokeWidth={1.5} />
+        </a>
+
+        {/* קישור מייל - נשאר עדין ויפה כמו שביקשת */}
+        <a
+          href={`mailto:${email}`}
+          className="mr-2 flex items-center gap-2 text-[#FCF6BA]/60 transition-colors hover:text-[#FCF6BA]"
+        >
+          <Mail className="h-4 w-4" />
+          <span className="hidden text-[10px] font-light tracking-[0.2em] uppercase md:block">
+            Send Email
+          </span>
+        </a>
+      </div>
+    );
+  }
+
+  // אפשרות 2: המצב המאוחד (ה"וואו" למרכז הדף)
+  return (
+    <div className={cn("flex flex-col items-center gap-6", className)}>
+      <div className="relative flex items-center overflow-hidden rounded-full border-[1.5px] border-[#FCF6BA]/60 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] shadow-[0_12px_25px_rgba(0,0,0,0.4)] transition-all duration-500">
+        <a
+          href={waHref(phone, whatsappMessage)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2.5 border-l border-[#402012]/20 px-6 py-3.5 transition-colors hover:bg-white/10"
+        >
+          <WhatsAppIcon className="h-5 w-5 fill-[#402012]" />
+          <span className="font-bold tracking-wide text-[#402012]" style={{ textShadow: "0px 1px 0px rgba(252,246,186,0.8)" }}>
             WhatsApp
           </span>
         </a>
 
-        {/* צד חיוג */}
         <a
           href={telHref(phone)}
-          className="flex items-center gap-2.5 px-6 py-3.5 hover:bg-white/10 transition-colors"
+          className="flex items-center gap-2.5 px-6 py-3.5 transition-colors hover:bg-white/10"
         >
-          <Phone className="h-4 w-4" style={{ color: iconFill }} strokeWidth={2.5} />
-          <span className={cn("font-bold tracking-wide", textStyles)}
-            style={!isGhost ? { textShadow: "0px 1px 1px rgba(252,246,186,0.8)" } : {}}>
+          <Phone className="h-4 w-4 text-[#402012]" strokeWidth={2.5} />
+          <span className="font-bold tracking-wide text-[#402012]" style={{ textShadow: "0px 1px 1px rgba(252,246,186,0.8)" }}>
             חיוג מהיר
           </span>
         </a>
       </div>
 
-      {/* כפתור מייל עדין */}
       <a
-        href={`mailto:${email}?subject=${emailSubject}&body=${emailBody}`}
-        className="group flex items-center gap-2 text-[#FCF6BA]/70 hover:text-[#FCF6BA] transition-all text-xs tracking-[0.2em] uppercase"
+        href={`mailto:${email}`}
+        className="group flex items-center gap-2 text-[#FCF6BA]/70 transition-all hover:text-[#FCF6BA] text-xs tracking-[0.2em] uppercase"
       >
         <Mail className="h-3.5 w-3.5 transition-transform group-hover:scale-110" />
         <span className="border-b border-transparent group-hover:border-[#FCF6BA]/50">
           Send Email
         </span>
       </a>
-
     </div>
   );
 }
