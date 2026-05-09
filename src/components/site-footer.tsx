@@ -37,7 +37,17 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 border-t border-border/60 pt-6 text-center text-xs text-muted-foreground">
-          <p>לילך טייב - זמרת לנשים | כל הזכויות שמורות © {new Date().getFullYear()}</p>
+          <p>
+            לילך טייב - זמרת לנשים | כל הזכויות{" "}
+            <Link
+              to="/login"
+              className="text-inherit no-underline hover:text-inherit"
+              aria-label="כניסת מנהל"
+            >
+              שמורות
+            </Link>{" "}
+            © {new Date().getFullYear()}
+          </p>
           <p className="mt-2">
             האתר עוצב ופותח ע״י שירה טייב |{" "}
             <a href="mailto:shirataieb26@gmail.com" className="text-primary hover:underline">
