@@ -1,8 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, LogIn } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
 
 const NAV = [
   { to: "/", label: "בית" },
@@ -16,7 +15,6 @@ const NAV = [
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [hasSession, setHasSession] = useState(false);
   const path = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
@@ -29,14 +27,6 @@ export function SiteHeader() {
   useEffect(() => {
     setOpen(false);
   }, [path]);
-
-  useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((_e, session) => {
-      setHasSession(!!session);
-    });
-    supabase.auth.getSession().then(({ data: s }) => setHasSession(!!s.session));
-    return () => data.subscription.unsubscribe();
-  }, []);
 
   return (
     <header className={cn(
@@ -65,16 +55,6 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
-          <Link
-            to={hasSession ? "/admin" : "/login"}
-            className="inline-flex items-center gap-2 rounded-full border border-primary/40 px-4 py-2 text-sm font-medium text-primary transition hover:bg-primary/10"
-          >
-            <LogIn className="h-4 w-4" />
-            {hasSession ? "אזור ניהול" : "התחברות"}
-          </Link>
-        </div>
-
         <button
           type="button"
           className="rounded-full p-2 text-foreground lg:hidden"
@@ -100,13 +80,6 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              to={hasSession ? "/admin" : "/login"}
-              className="mt-2 inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 px-4 py-3 text-sm font-medium text-primary"
-            >
-              <LogIn className="h-4 w-4" />
-              {hasSession ? "אזור ניהול" : "התחברות"}
-            </Link>
           </div>
         </div>
       )}

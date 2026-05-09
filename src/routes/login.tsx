@@ -1,48 +1,57 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LogIn, KeyRound } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { useServerFn } from "@tanstack/react-start";
 import { verifyAdminPin } from "@/lib/admin-pin.functions";
+import { ADMIN_EMAIL, useAdminContext } from "@/hooks/use-admin";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "התחברות - לילך טייב" }] }),
   component: LoginPage,
 });
 
-const ADMIN_EMAIL = "lilachtaieb@gmail.com";
-
 function LoginPage() {
   const navigate = useNavigate();
   const verifyPin = useServerFn(verifyAdminPin);
+  const { session, isAdmin } = useAdminContext();
   const [step, setStep] = useState<"google" | "pin">(() =>
     typeof window !== "undefined" && sessionStorage.getItem("admin_email_ok") === "1" ? "pin" : "google"
   );
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // After Google OAuth redirect back, validate the email and advance to PIN.
+  useEffect(() => {
+    if (!session) return;
+    const email = session.user.email?.toLowerCase();
+    if (email !== ADMIN_EMAIL) {
+      supabase.auth.signOut().then(() => {
+        toast.error("אין הרשאה לגישה לאזור הניהול");
+      });
+      sessionStorage.removeItem("admin_email_ok");
+      setStep("google");
+      return;
+    }
+    sessionStorage.setItem("admin_email_ok", "1");
+    if (sessionStorage.getItem("admin_code_ok") !== "1") {
+      setStep("pin");
+    }
+  }, [session]);
+
   const handleGoogle = async () => {
     setLoading(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin + "/login",
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin + "/admin",
+        },
       });
-      if (result.error) {
+      if (error) {
         toast.error("שגיאה בהתחברות");
-        return;
       }
-      if (result.redirected) return;
-      const { data } = await supabase.auth.getUser();
-      const userEmail = data.user?.email?.toLowerCase();
-      if (userEmail !== ADMIN_EMAIL) {
-        await supabase.auth.signOut();
-        toast.error("אין הרשאה לגישה לאזור הניהול");
-        return;
-      }
-      sessionStorage.setItem("admin_email_ok", "1");
-      setStep("pin");
     } finally {
       setLoading(false);
     }
@@ -50,6 +59,11 @@ function LoginPage() {
 
   const submitCode = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isAdmin) {
+      toast.error("יש להתחבר תחילה עם חשבון Google המורשה");
+      setStep("google");
+      return;
+    }
     setLoading(true);
     try {
       const res = await verifyPin({ data: { pin: code } });

@@ -66,7 +66,7 @@ function Home() {
             
             {/* שימוש בגרסת Ghost - עדינה ואלגנטית שלא מסתירה את התוכן */}
             <div className="mt-8 flex justify-start">
-              <ContactButtons variant="ghost" />
+              <ContactButtons variant="minimal" />
             </div>
 
             {upcoming[0] && (
