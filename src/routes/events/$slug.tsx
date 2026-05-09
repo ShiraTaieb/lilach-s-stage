@@ -74,7 +74,7 @@ function EventDetailPage() {
 
           <div className="bg-gradient-card mt-8 rounded-2xl border border-primary/20 p-6">
             <p className="mb-4 font-display text-xl">לבירור פרטים והזמנה:</p>
-            <ContactButtons message={`שלום לילך, אשמח לפרטים על ${ev.title}`} showNumber />
+            <ContactButtons message={`שלום לילך, אשמח לפרטים על ${ev.title}`} />
           </div>
         </div>
       </div>
